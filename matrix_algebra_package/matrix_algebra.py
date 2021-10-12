@@ -7,8 +7,12 @@ Created on Thu Oct  7 10:08:01 2021
 """
 import numpy as np
 from inverse import inverse
+import sympy as sym
+from sympy.abc import x
+from rref import rref
+from nullSpace import nullSpace
 
-class matrix_algebra(inverse):
+class matrix_algebra(inverse,rref):
     def __init__(self):
         super().__init__()
         
@@ -66,14 +70,54 @@ class matrix_algebra(inverse):
                 arr_1_transpose_times_arr_2 = self.multiply(arr_1_transpose, arr_2)
                 solution = self.multiply(arr_1_transpose_times_arr_1_inverse,arr_1_transpose_times_arr_2)
             
-        return solution    
+        return solution
+
+    def characteristPolynomial(self,arr_1):
+        if len(arr_1) != len(arr_1[0]):
+            print("The eigenvalues can be calculated for only square matrices")
+            
+        else:
+            arr_2 = x * np.eye(len(arr_1))
+            p = self.getMatrixDeternminant(arr_1 - arr_2)
+             
+        return p
+        
+    
+    
+    def eigenvalue(self,arr_1): 
+        roots = []
+        if len(arr_1) != len(arr_1[0]):
+            print("The eigenvalues can be calculated for only square matrices")
+        else:
+            poly = self.characteristPolynomial(arr_1)
+            solution = sym.roots(poly)
+            for key , value in solution.items():
+                for i in range(value):
+                    roots.append(key)
+                
+            return roots
+        
+    def rref (self,arr_1):
+         arr_1 = np.array(arr_1)
+         aux1,_,_ = rref.rref(rref,arr_1)
+         return aux1
+     
+    def null (self,arr_1):
+        aux = nullSpace.null(nullSpace,arr_1)
+        return aux
+    
+        
+        
     
     
     
     
         
 # matrix_algebra = matrix_algebra()
-# a = [[1,1],[1,1]]
+a = [[5,0,1],[2,0,2]]
+c = matrix_algebra()
+d = c.null(a)
+print(d) 
 # b = [[2,2],[2,2]]
 # c = [[1,2],[3,4],[5,6]]
 # add_1 = matrix_algebra.add(a,b)
@@ -84,9 +128,14 @@ class matrix_algebra(inverse):
 
 # multiply = matrix_algebra.multiply(a,b)
 # print(multiply)
-# d = [[1,2],[2,1]]
+# d = [[1,0],[0,1]]
 # inverse = matrix_algebra.inverse(d)
 # print(inverse)
 
-# solution = matrix_algebra.solve([[1,2],[2,1],[3,3]],[[1],[1],[1]])
-# print(solution)
+# sol = matrix_algebra.solve([[1,2],[2,1],[3,3]],[[1],[1],[1]])
+# print(sol)
+
+# eigenvalue_2 = matrix_algebra.eigenvalue(d)
+# print(eigenvalue_2)
+       
+    
